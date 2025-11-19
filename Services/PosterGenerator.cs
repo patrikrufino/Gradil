@@ -30,8 +30,27 @@ namespace Gradil.Services
             string outputDir = Path.Combine(docs, "Gradil");
             if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
-            string name = "gradil_" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + ".pdf";
-            string outputPath = Path.Combine(outputDir, name);
+            // Build output file name: g_{originalname}_data(dd_mm_aa).pdf
+            string originalName = Path.GetFileNameWithoutExtension(options.SourceFile);
+            // sanitize original name for filesystem
+            foreach (var c in Path.GetInvalidFileNameChars())
+            {
+                originalName = originalName.Replace(c, '_');
+            }
+            originalName = originalName.Replace(' ', '_');
+
+            string datePart = DateTime.Now.ToString("dd_MM_yy");
+            string baseName = $"g_{originalName}_{datePart}.pdf";
+            string outputPath = Path.Combine(outputDir, baseName);
+
+            // avoid overwriting existing files by adding a numeric suffix if needed
+            int suffix = 1;
+            while (File.Exists(outputPath))
+            {
+                string altName = $"g_{originalName}_{datePart}_{suffix}.pdf";
+                outputPath = Path.Combine(outputDir, altName);
+                suffix++;
+            }
 
             // Open source document (import mode)
             var input = PdfReader.Open(options.SourceFile, PdfDocumentOpenMode.Import);

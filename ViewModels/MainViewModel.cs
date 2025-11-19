@@ -12,6 +12,7 @@ namespace Gradil.ViewModels
 {
     public class MainViewModel : INotifyPropertyChanged
     {
+        private bool _isBusy = false;
         private string _selectedFilePath;
         private int _rows = 1;
         private int _cols = 1;
@@ -28,6 +29,18 @@ namespace Gradil.ViewModels
                 _selectedFilePath = value;
                 OnPropertyChanged(nameof(SelectedFilePath));
                 // Notify commands that depend on SelectedFilePath
+                (GenerateCommand as RelayCommand)?.RaiseCanExecuteChanged();
+            }
+        }
+
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                _isBusy = value;
+                OnPropertyChanged(nameof(IsBusy));
+                // Update command availability when busy state changes
                 (GenerateCommand as RelayCommand)?.RaiseCanExecuteChanged();
             }
         }
@@ -102,7 +115,7 @@ namespace Gradil.ViewModels
                 catch { /* ignore IO errors during load */ }
 
                 SelectFileCommand = new RelayCommand(_ => SelectFile());
-                GenerateCommand = new RelayCommand(async _ => await GenerateAsync(), _ => !string.IsNullOrWhiteSpace(SelectedFilePath));
+                GenerateCommand = new RelayCommand(async _ => await GenerateAsync(), _ => !string.IsNullOrWhiteSpace(SelectedFilePath) && !IsBusy);
                 OpenFolderCommand = new RelayCommand(_ => OpenOutputFolder());
                 OpenSelectedFileCommand = new RelayCommand(_ => OpenSelectedFile(), _ => !string.IsNullOrWhiteSpace(SelectedGeneratedFile));
         }
@@ -123,6 +136,7 @@ namespace Gradil.ViewModels
         {
             try
             {
+                IsBusy = true;
                 StatusMessage = "Gerando...";
 
                 string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
@@ -149,6 +163,10 @@ namespace Gradil.ViewModels
             catch (Exception ex)
             {
                 StatusMessage = "Erro: " + ex.Message;
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 
