@@ -1,0 +1,18 @@
+﻿<Application x:Class="Gradil.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:Gradil"
+             StartupUri="Views/MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <!-- FluentWPF theme resources -->
+                <ResourceDictionary Source="pack://application:,,,/FluentWPF;component/Themes/Generic.xaml" />
+                <!-- App theme / accent fallback -->
+                <ResourceDictionary Source="Resources/Theme.xaml" />
+                <!-- App controls (global styles) -->
+                <ResourceDictionary Source="Resources/Controls.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

@@ -1,0 +1,70 @@
+## .gitignore para projetos .NET / WPF (Visual Studio)
+
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build Folders
+[Bb]in/
+[Oo]bj/
+publish/
+artifacts/
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# NuGet
+*.nupkg
+.packages/
+project.lock.json
+nuget.exe
+*.nuget.props
+
+# Azure
+csx/
+*.build.csdef
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.DS_Store
+
+# Logs
+*.log
+
+# Certificates and keys
+*.pfx
+*.snk
+
+# User secrets
+secrets.json
+
+# Temporary files
+*_ReSharper*
+*.cache
+*.tmp
+
+# JetBrains Rider caches
+.idea/
+/.idea/
+
+# Ignore publish outputs (artifacts)
+/publish/
+
+# Ignore created installers
+*.msi
+*.exe
+
+# Optional: ignore package lock (uncomment if needed)
+# project.assets.json

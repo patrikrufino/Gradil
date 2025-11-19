@@ -1,0 +1,102 @@
+<Window x:Class="Gradil.Views.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:conv="clr-namespace:Gradil.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:Gradil.Views"
+        
+    mc:Ignorable="d"
+    Title="Gradil" Height="600" Width="800"
+    Background="{DynamicResource BackgroundBrush}"
+    Foreground="{DynamicResource ForegroundBrush}">
+    <Window.Resources>
+        <conv:FileNameConverter x:Key="FileNameConverter" />
+    </Window.Resources>
+    <!-- Outer container stretches, inner box is centered and constrained to 800x600 -->
+    <Grid>
+        <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="800" MaxHeight="600" Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+        <!-- Linha 0: botão Selecionar antes do input -->
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch" Grid.Row="0">
+            <Button Content="Selecionar arquivo" Command="{Binding SelectFileCommand}" Width="140" />
+            <TextBox Text="{Binding SelectedFilePath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="8,0,0,0" Height="36" VerticalContentAlignment="Center" Width="520" IsReadOnly="True" Style="{StaticResource FluentTextBoxStyle}" />
+        </StackPanel>
+
+        <!-- Linha 1: apenas ComboBoxes de Linhas/Colunas -->
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="0,12,0,0">
+            <StackPanel>
+                <TextBlock Text="Linhas"/>
+                <ComboBox SelectedValue="{Binding Rows, Mode=TwoWay}" Width="120">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                            <sys:Int32>1</sys:Int32>
+                            <sys:Int32>2</sys:Int32>
+                            <sys:Int32>3</sys:Int32>
+                            <sys:Int32>4</sys:Int32>
+                            <sys:Int32>5</sys:Int32>
+                            <sys:Int32>6</sys:Int32>
+                            <sys:Int32>7</sys:Int32>
+                            <sys:Int32>8</sys:Int32>
+                            <sys:Int32>9</sys:Int32>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+            </StackPanel>
+
+            <StackPanel Margin="16,0,0,0">
+                <TextBlock Text="Colunas"/>
+                <ComboBox SelectedValue="{Binding Cols, Mode=TwoWay}" Width="120">
+                    <ComboBox.ItemsSource>
+                        <x:Array Type="sys:Int32" xmlns:sys="clr-namespace:System;assembly=mscorlib">
+                            <sys:Int32>1</sys:Int32>
+                            <sys:Int32>2</sys:Int32>
+                            <sys:Int32>3</sys:Int32>
+                            <sys:Int32>4</sys:Int32>
+                            <sys:Int32>5</sys:Int32>
+                            <sys:Int32>6</sys:Int32>
+                            <sys:Int32>7</sys:Int32>
+                            <sys:Int32>8</sys:Int32>
+                            <sys:Int32>9</sys:Int32>
+                        </x:Array>
+                    </ComboBox.ItemsSource>
+                </ComboBox>
+            </StackPanel>
+            <!-- Botão Gerar Gradil na mesma linha das seleções -->
+            <Button Content="Gerar Gradil" Command="{Binding GenerateCommand}" Width="140" Margin="16,18,0,0" />
+        </StackPanel>
+
+        <!-- Linha 2: Ações (moved) -->
+        <!-- Gerar Gradil foi movido para a mesma linha dos ComboBoxes -->
+        
+        <Grid Grid.Row="3" Margin="0,16,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel>
+                <TextBlock Text="{Binding StatusMessage}" />
+                <TextBlock Text="Arquivos gerados" FontWeight="Bold" Margin="0,8,0,4" />
+                <ListBox ItemsSource="{Binding GeneratedFiles}" SelectedItem="{Binding SelectedGeneratedFile}" Height="240">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Converter={StaticResource FileNameConverter}}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,8,0,0">
+                    <Button Content="Imprimir" Command="{Binding OpenSelectedFileCommand}" Width="140" />
+                    <Button Content="Abrir pasta" Command="{Binding OpenFolderCommand}" Width="120" Margin="8,0,0,0" />
+                </StackPanel>
+            </StackPanel>
+            
+        </Grid>
+        </Grid>
+    </Grid>
+</Window>
