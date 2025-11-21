@@ -136,6 +136,9 @@ namespace Gradil.ViewModels
             {
                 IsBusy = true;
                 StatusMessage = "Gerando...";
+                // Yield to the UI thread so bindings (IsBusy) can update and the
+                // loading overlay is rendered before we start background work.
+                await Task.Yield();
                 string outputDir = GetOutputDir();
                 var options = new TiledPosterOptions
                 {
