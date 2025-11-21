@@ -19,7 +19,7 @@ public partial class App : Application
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		base.OnStartup(e);
-		// Apply accent color and app theme (light/dark) based on Windows settings.
+		// Apply app theme first, then overwrite AccentBrush with system accent color.
 		ApplyAccentColor();
 		ApplyWindowsTheme();
 
@@ -50,18 +50,39 @@ public partial class App : Application
 			Color accent = GetWindowsAccentColor();
 			var brush = new SolidColorBrush(accent);
 			brush.Freeze();
+
+			// Decide foreground (black or white) based on perceived luminance for contrast
+			Color fgColor = GetContrastingForeground(accent);
+			var fgBrush = new SolidColorBrush(fgColor);
+			fgBrush.Freeze();
+
 			if (Current != null)
 			{
 				if (Current.Resources.Contains("AccentBrush"))
 					Current.Resources["AccentBrush"] = brush;
 				else
 					Current.Resources.Add("AccentBrush", brush);
+
+				if (Current.Resources.Contains("AccentForegroundBrush"))
+					Current.Resources["AccentForegroundBrush"] = fgBrush;
+				else
+					Current.Resources.Add("AccentForegroundBrush", fgBrush);
+
+				System.Diagnostics.Debug.WriteLine($"[Diag] Applied AccentBrush: {accent}, AccentForeground: {fgColor}");
 			}
 		}
 		catch
 		{
 			// ignore - Theme dictionaries provide a fallback AccentBrush
 		}
+	}
+
+	private Color GetContrastingForeground(Color background)
+	{
+		// Perceived luminance (rec. 709) - range 0..1
+		double l = (0.2126 * background.R + 0.7152 * background.G + 0.0722 * background.B) / 255.0;
+		// If luminance is low (dark background) use white, otherwise black
+		return l < 0.5 ? Colors.White : Colors.Black;
 	}
 
 	private void ApplyWindowsTheme()

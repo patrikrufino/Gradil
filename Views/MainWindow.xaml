@@ -5,11 +5,21 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:Gradil.Views"
-        
+    xmlns:shell="clr-namespace:System.Windows.Shell;assembly=PresentationFramework"
+    
     mc:Ignorable="d"
+    Loaded="Window_Loaded"
     Title="Gradil" Height="600" Width="800"
     Background="{DynamicResource BackgroundBrush}"
-    Foreground="{DynamicResource ForegroundBrush}">
+    Foreground="{DynamicResource ForegroundBrush}"
+    WindowStyle="None"
+    AllowsTransparency="False"
+    Icon="/Gradil;component/gradil.ico">
+
+    <WindowChrome.WindowChrome>
+        <!-- Use custom caption buttons (works consistently on Windows 10 and 11) -->
+        <shell:WindowChrome CaptionHeight="36" CornerRadius="0" GlassFrameThickness="0" UseAeroCaptionButtons="False" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <!-- Rounded indeterminate ProgressBar style -->
         <Style x:Key="RoundedIndeterminateProgressBar" TargetType="ProgressBar">
@@ -52,6 +62,30 @@
     </Window.Resources>
     <!-- Outer container stretches, inner box is centered and constrained to 800x600 -->
     <Grid>
+        <DockPanel>
+        <!-- Custom title bar (content only) - reserve right padding so system caption buttons are visible -->
+        <Border x:Name="TitleBar" DockPanel.Dock="Top" Height="36" Background="{DynamicResource TitleBarBackgroundBrush}" SnapsToDevicePixels="True" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown" Padding="8,0,8,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <!-- Window icon (bind to Window.Icon if set) -->
+                <Image Grid.Column="0" Width="16" Height="16" VerticalAlignment="Center" Source="{Binding Icon, RelativeSource={RelativeSource AncestorType=Window}}" Margin="4,0,8,0" />
+
+                <TextBlock x:Name="TitleText" Grid.Column="1" Text="Gradil" VerticalAlignment="Center" FontWeight="SemiBold" Foreground="{DynamicResource TitleBarForegroundBrush}" />
+
+                <!-- Custom caption buttons (styled to match Fluent-ish look and work on Windows 10) -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center" shell:WindowChrome.IsHitTestVisibleInChrome="True">
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Click="MinButton_Click" shell:WindowChrome.IsHitTestVisibleInChrome="True">—</Button>
+                    <Button Style="{StaticResource TitleBarButtonStyle}" Click="MaxButton_Click" shell:WindowChrome.IsHitTestVisibleInChrome="True">▢</Button>
+                    <Button Style="{StaticResource TitleBarCloseButtonStyle}" Click="CloseButton_Click" shell:WindowChrome.IsHitTestVisibleInChrome="True">✕</Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center" MaxWidth="800" MaxHeight="600" Margin="16">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -148,11 +182,13 @@
                 </StackPanel>
             </StackPanel>
             
-        </Grid>
-        </Grid>
+            </Grid>
 
-        <!-- Loading overlay shown while ViewModel.IsBusy is true -->
-        <Grid Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" Background="#B3000000">
+        </Grid>
+        </DockPanel>
+
+        <!-- Loading overlay shown while ViewModel.IsBusy is true (covers entire window) -->
+        <Grid Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" Background="#B3000000" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Border Width="320" Padding="16" CornerRadius="12" Background="{DynamicResource PopupBackgroundBrush}" BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.90">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                     <ProgressBar IsIndeterminate="True" Width="260" Height="18" Style="{StaticResource RoundedIndeterminateProgressBar}" Background="{DynamicResource PopupBorderBrush}" Foreground="#FF28A745" />

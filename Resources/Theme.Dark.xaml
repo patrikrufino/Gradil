@@ -8,6 +8,13 @@
     <SolidColorBrush x:Key="AccentBrush" Color="#FF0078D7" />
     <!-- Button background (separate token so buttons can be themed independently) -->
     <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF0078D7" />
+    <!-- Title bar brushes -->
+    <SolidColorBrush x:Key="TitleBarBackgroundBrush" Color="#FF000000" />
+    <SolidColorBrush x:Key="TitleBarForegroundBrush" Color="#FFFFFFFF" />
+    <!-- Title bar button brushes -->
+    <SolidColorBrush x:Key="TitleBarButtonHoverBrush" Color="#33FFFFFF" />
+    <SolidColorBrush x:Key="TitleBarButtonPressedBrush" Color="#1AFFFFFF" />
+    <SolidColorBrush x:Key="TitleBarCloseHoverBrush" Color="#FFE81123" />
     <!-- UI helper brushes -->
     <SolidColorBrush x:Key="OverlayBrush" Color="#26FFFFFF" />
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#FF3A3A3A" />

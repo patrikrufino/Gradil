@@ -20,7 +20,7 @@
 
   <!-- Ensure the ICO is included in the project so MSBuild can embed it -->
   <ItemGroup>
-    <None Include="gradil.ico" />
+    <Resource Include="gradil.ico" />
   </ItemGroup>
 
 </Project>
