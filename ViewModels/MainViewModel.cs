@@ -96,10 +96,8 @@ namespace Gradil.ViewModels
         public MainViewModel(PosterGenerator posterGenerator)
         {
             _posterGenerator = posterGenerator ?? throw new ArgumentNullException(nameof(posterGenerator));
-
                 // Ensure output directory exists and load existing generated files
-                string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                string outputDir = Path.Combine(docs, "Gradil");
+                string outputDir = GetOutputDir();
                 if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
                 // Load existing PDFs (most recent creation date first)
                 try
@@ -138,9 +136,7 @@ namespace Gradil.ViewModels
             {
                 IsBusy = true;
                 StatusMessage = "Gerando...";
-
-                string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-                string outputDir = Path.Combine(docs, "Gradil");
+                string outputDir = GetOutputDir();
                 var options = new TiledPosterOptions
                 {
                     SourceFile = SelectedFilePath,
@@ -181,11 +177,20 @@ namespace Gradil.ViewModels
 
         private void OpenOutputFolder()
         {
-            string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string outputDir = Path.Combine(docs, "Gradil");
+            string outputDir = GetOutputDir();
             if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
             Process.Start(new ProcessStartInfo("explorer.exe", $"\"{outputDir}\"") { UseShellExecute = true });
+        }
+
+        private string GetOutputDir()
+        {
+            // Use per-user temp folder so files are created in the current user's profile
+            // even if the executable is run from a network location. Note: temp folders
+            // can be cleaned by the OS; if you need persistent user files use
+            // Environment.SpecialFolder.LocalApplicationData or MyDocuments.
+            string baseDir = System.IO.Path.GetTempPath();
+            return Path.Combine(baseDir, "Gradil");
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

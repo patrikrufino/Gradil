@@ -26,8 +26,12 @@ namespace Gradil.Services
             if (string.IsNullOrWhiteSpace(options.SourceFile) || !File.Exists(options.SourceFile))
                 throw new FileNotFoundException("Arquivo PDF fonte não encontrado.", options.SourceFile);
 
-            string docs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            string outputDir = Path.Combine(docs, "Gradil");
+            // Use per-user temp folder so files are created in the current user's profile
+            // even if the executable is run from a network location. Note: temp folders
+            // can be cleaned by the OS; if you need persistent user files use
+            // Environment.SpecialFolder.LocalApplicationData or MyDocuments.
+            string baseDir = Path.GetTempPath();
+            string outputDir = Path.Combine(baseDir, "Gradil");
             if (!Directory.Exists(outputDir)) Directory.CreateDirectory(outputDir);
 
             // Build output file name: g_{originalname}_data(dd_mm_aa).pdf
