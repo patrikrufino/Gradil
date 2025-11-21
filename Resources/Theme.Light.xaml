@@ -2,15 +2,26 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
     <!-- Light theme brushes (Fluent-like defaults) -->
     <SolidColorBrush x:Key="BackgroundBrush" Color="#FFFFFFFF" />
+    <SolidColorBrush x:Key="InputBackgroundBrush" Color="#FFF3F3F3" />
     <SolidColorBrush x:Key="ForegroundBrush" Color="#FF111111" />
     <SolidColorBrush x:Key="BorderBrush" Color="#FFD0D0D0" />
     <SolidColorBrush x:Key="AccentBrush" Color="#FF0078D7" />
+    <!-- Button background (separate token so buttons can be themed independently) -->
+    <SolidColorBrush x:Key="ButtonBackgroundBrush" Color="#FF0078D7" />
     <!-- UI helper brushes -->
     <SolidColorBrush x:Key="OverlayBrush" Color="#40FFFFFF" />
     <SolidColorBrush x:Key="DisabledBackgroundBrush" Color="#FFBFBFBF" />
     <SolidColorBrush x:Key="FocusBackgroundBrush" Color="#FFFDFDFD" />
     <SolidColorBrush x:Key="PopupBackgroundBrush" Color="#FFFFFFFF" />
+    <!-- Semi-transparent variant for popover backgrounds (90% opacity) -->
+    <SolidColorBrush x:Key="PopupBackgroundBrushSemi" Color="#E6FFFFFF" />
     <SolidColorBrush x:Key="PopupBorderBrush" Color="#FFD0D0D0" />
     <SolidColorBrush x:Key="IconBrush" Color="#FF444444" />
     <SolidColorBrush x:Key="HighlightBrush" Color="#FFF0F0F0" />
+    <!-- Scrollbar / small control background used by buttons and thumbs -->
+    <SolidColorBrush x:Key="ScrollBarBackgroundBrush" Color="#FFCCCCCC" />
+    <!-- Success / alert brushes (green) -->
+    <SolidColorBrush x:Key="SuccessForegroundBrush" Color="#FF0F5132" />
+    <SolidColorBrush x:Key="SuccessBackgroundBrush" Color="#1A28A745" /> <!-- 10% opacity -->
+    <SolidColorBrush x:Key="SuccessBorderBrush" Color="#4C28A745" /> <!-- 30% opacity -->
 </ResourceDictionary>

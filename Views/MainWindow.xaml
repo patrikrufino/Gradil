@@ -11,6 +11,42 @@
     Background="{DynamicResource BackgroundBrush}"
     Foreground="{DynamicResource ForegroundBrush}">
     <Window.Resources>
+        <!-- Rounded indeterminate ProgressBar style -->
+        <Style x:Key="RoundedIndeterminateProgressBar" TargetType="ProgressBar">
+            <Setter Property="Height" Value="18" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="9" SnapsToDevicePixels="True" Height="{TemplateBinding Height}" Width="{TemplateBinding Width}">
+                            <Canvas x:Name="CanvasRoot" ClipToBounds="True">
+                                <Border x:Name="Indicator" Background="{TemplateBinding Foreground}" CornerRadius="9" Height="{TemplateBinding Height}" Width="80" Canvas.Left="-80" />
+                            </Canvas>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsIndeterminate" Value="True">
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="IndeterminateStoryboard">
+                                        <Storyboard RepeatBehavior="Forever">
+                                                <!-- Use a constant 'To' value so the Storyboard can be frozen at runtime.
+                                                    The ProgressBar instance sets Width=260; indicator width is 80, so moving to 260
+                                                    makes the indicator slide fully across. If you need dynamic sizing later,
+                                                    switch to a code-behind animation instead of a bound Storyboard. -->
+                                                    <!-- Move the indicator from fully left (out of view) to fully inside the container
+                                                        so the rounded corner remains visible at the right edge. For Width=260 and
+                                                        indicator width=80 the final left position is 180 (260 - 80). -->
+                                                    <DoubleAnimation Storyboard.TargetName="Indicator" Storyboard.TargetProperty="(Canvas.Left)" From="-80" To="180" Duration="0:0:1.2" />
+                                        </Storyboard>
+                                    </BeginStoryboard>
+                                </Trigger.EnterActions>
+                                <Trigger.ExitActions>
+                                    <StopStoryboard BeginStoryboardName="IndeterminateStoryboard" />
+                                </Trigger.ExitActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
         <BooleanToVisibilityConverter x:Key="BoolToVis" />
         <conv:FileNameConverter x:Key="FileNameConverter" />
     </Window.Resources>
@@ -82,7 +118,22 @@
             </Grid.ColumnDefinitions>
 
             <StackPanel>
-                <TextBlock Text="{Binding StatusMessage}" />
+                <Border Background="{DynamicResource SuccessBackgroundBrush}" BorderBrush="{DynamicResource SuccessBorderBrush}" BorderThickness="1" Padding="8" CornerRadius="6" Margin="0,0,0,8">
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Visible" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding StatusMessage}" Value="{x:Null}">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding StatusMessage}" Value="">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding StatusMessage}" Foreground="{DynamicResource SuccessForegroundBrush}" />
+                </Border>
                 <TextBlock Text="Arquivos gerados" FontWeight="Bold" Margin="0,8,0,4" />
                 <ListBox ItemsSource="{Binding GeneratedFiles}" SelectedItem="{Binding SelectedGeneratedFile}" Height="240">
                     <ListBox.ItemTemplate>
@@ -101,10 +152,10 @@
         </Grid>
 
         <!-- Loading overlay shown while ViewModel.IsBusy is true -->
-        <Grid Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" Background="#80000000">
-            <Border Width="320" Padding="16" CornerRadius="8" Background="{DynamicResource PopupBackgroundBrush}" BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+        <Grid Visibility="{Binding IsBusy, Converter={StaticResource BoolToVis}}" Background="#B3000000">
+            <Border Width="320" Padding="16" CornerRadius="12" Background="{DynamicResource PopupBackgroundBrush}" BorderBrush="{DynamicResource PopupBorderBrush}" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0.90">
                 <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                    <ProgressBar IsIndeterminate="True" Width="260" Height="18" />
+                    <ProgressBar IsIndeterminate="True" Width="260" Height="18" Style="{StaticResource RoundedIndeterminateProgressBar}" Background="{DynamicResource PopupBorderBrush}" Foreground="#FF28A745" />
                     <TextBlock Text="Gerando..." Margin="0,12,0,0" HorizontalAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" />
                 </StackPanel>
             </Border>
